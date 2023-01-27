@@ -220,6 +220,17 @@ impl MemorySet {
     pub fn translate(&self, vpn: VirtPageNum) -> Option<PageTableEntry> {
         self.page_table.translate(vpn)
     }
+    pub fn is_map(&self, vpn: VirtPageNum) -> bool {
+        if let Some(pte) = self.translate(vpn) {
+            if pte.is_valid() {
+                return true;
+            }
+        }
+        false
+    }
+    pub fn remove_map_area(&mut self, vpn: VirtPageNum) {
+        self.areas[0].unmap_one(&mut self.page_table, vpn);
+    }
 }
 
 /// map area structure, controls a contiguous piece of virtual memory
